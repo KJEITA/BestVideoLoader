@@ -32,25 +32,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    fun sample(){
-//        val fields = listOf(UsersFields.SEX, UsersFields.LAST_NAME_ABL)
-//        VK.execute(FriendsService().friendsGet(fields = fields), object: VKApiCallback<FriendsGetFieldsResponse> {
-//            override fun success(result: FriendsGetFieldsResponse) {
-//                // you stuff is here
-//                result.items.forEach {
-//                    Log.d("MyFriends", it.toString())
-//                }
-//            }
-//            override fun fail(error: Exception) {
-//                Log.e("TAG", error.toString())
-//            }
-//        })
-//    }
-
     fun sendMyVideo(){
         VK.execute(VKSaveVideoRequest(), object: VKApiCallback<VKVideoSaveDAO> {
             override fun success(result: VKVideoSaveDAO) {
-                val i = 5+5
+                
             }
 
             override fun fail(error: Exception) {
