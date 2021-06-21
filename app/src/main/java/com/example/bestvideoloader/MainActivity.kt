@@ -1,47 +1,80 @@
 package com.example.bestvideoloader
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.widget.Button
+import android.widget.Toast
+import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
-import com.vk.api.sdk.VK
-import com.vk.api.sdk.VKApiCallback
+import com.example.bestvideoloader.models.VKVideoFileUploadInfo
+import com.example.bestvideoloader.requests.VKVideoPostCommand
+import com.vk.api.sdk.*
 import com.vk.api.sdk.auth.VKAccessToken
 import com.vk.api.sdk.auth.VKAuthCallback
 import com.vk.api.sdk.auth.VKScope
+import okhttp3.*
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         VK.login(this, arrayListOf(VKScope.VIDEO))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val callback = object: VKAuthCallback {
+         val callback = object : VKAuthCallback {
             override fun onLogin(token: VKAccessToken) {
-                sendMyVideo()
+                initView()
             }
 
             override fun onLoginFailed(errorCode: Int) {
-                // User didn't pass authorization
             }
         }
-        if (data == null || !VK.onActivityResult(requestCode, resultCode, data, callback)) {
+
+        if (data == null || !VK.onActivityResult(requestCode, resultCode, data, callback)) 
             super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 1) {
+            val contentURI: Uri? = data?.data
+            val videoView = findViewById<VideoView>(R.id.vv)
+            videoView.setVideoURI(contentURI)
+            videoView.requestFocus()
+            videoView.start()
+
+            if (contentURI != null) {
+                sendMyVideo(contentURI)
+            }
         }
     }
 
-    fun sendMyVideo(){
-        VK.execute(VKSaveVideoRequest(), object: VKApiCallback<VKVideoSaveDAO> {
-            override fun success(result: VKVideoSaveDAO) {
-                
+    private fun initView() {
+        val btn = findViewById<Button>(R.id.btn)
+        btn.setOnClickListener {
+            chooseVideoFromGallery()
+        }
+    }
+
+    private fun chooseVideoFromGallery() {
+        val galleryIntent = Intent(
+            Intent.ACTION_PICK,
+            MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+        )
+        startActivityForResult(galleryIntent, 1)
+    }
+
+    private fun sendMyVideo(uri:Uri) {
+        VK.execute(VKVideoPostCommand(uri), object: VKApiCallback<VKVideoFileUploadInfo> {
+            override fun fail(error: Exception) {
+                Toast.makeText(this@MainActivity, "NOT_SEEEX", Toast.LENGTH_SHORT).show()
             }
 
-            override fun fail(error: Exception) {
-                TODO("Not yet implemented")
+            override fun success(result: VKVideoFileUploadInfo) {
+                Toast.makeText(this@MainActivity, "SEEEX", Toast.LENGTH_SHORT).show()
             }
         })
     }
-
 }
+
