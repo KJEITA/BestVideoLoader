@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,7 @@ import okhttp3.*
 
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var progress: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -25,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-         val callback = object : VKAuthCallback {
+        val callback = object : VKAuthCallback {
             override fun onLogin(token: VKAccessToken) {
                 initView()
             }
@@ -34,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        if (data == null || !VK.onActivityResult(requestCode, resultCode, data, callback)) 
+        if (data == null || !VK.onActivityResult(requestCode, resultCode, data, callback))
             super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == 1) {
@@ -55,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         btn.setOnClickListener {
             chooseVideoFromGallery()
         }
+        progress = findViewById(R.id.simple_progress)
     }
 
     private fun chooseVideoFromGallery() {
@@ -65,16 +68,23 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(galleryIntent, 1)
     }
 
-    private fun sendMyVideo(uri:Uri) {
-        VK.execute(VKVideoPostCommand(uri), object: VKApiCallback<VKVideoFileUploadInfo> {
-            override fun fail(error: Exception) {
-                Toast.makeText(this@MainActivity, "NOT_SEEEX", Toast.LENGTH_SHORT).show()
-            }
+    private fun sendMyVideo(uri: Uri) {
+        VK.execute(
+            VKVideoPostCommand(uri, ::setUpProgress),
+            object : VKApiCallback<VKVideoFileUploadInfo> {
+                override fun fail(error: Exception) {
+                    Toast.makeText(this@MainActivity, "fail", Toast.LENGTH_SHORT).show()
+                }
 
-            override fun success(result: VKVideoFileUploadInfo) {
-                Toast.makeText(this@MainActivity, "SEEEX", Toast.LENGTH_SHORT).show()
-            }
-        })
+                override fun success(result: VKVideoFileUploadInfo) {
+                    Toast.makeText(this@MainActivity, "success", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    private fun setUpProgress(value: Int, maxValue: Int) {
+        progress.max = maxValue
+        progress.progress = value
     }
 }
 

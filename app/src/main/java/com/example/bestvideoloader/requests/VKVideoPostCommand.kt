@@ -2,17 +2,15 @@ package com.example.bestvideoloader.requests
 
 import android.net.Uri
 import com.example.bestvideoloader.models.*
-import com.vk.api.sdk.VKApiManager
-import com.vk.api.sdk.VKApiResponseParser
-import com.vk.api.sdk.VKHttpPostCall
-import com.vk.api.sdk.VKMethodCall
+import com.vk.api.sdk.*
 import com.vk.api.sdk.exceptions.VKApiIllegalResponseException
 import com.vk.api.sdk.internal.ApiCommand
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
-class VKVideoPostCommand(private val videoUri: Uri) : ApiCommand<VKVideoFileUploadInfo>() {
+class VKVideoPostCommand(private val videoUri: Uri, val progressCallback: (Int, Int) -> Unit) :
+    ApiCommand<VKVideoFileUploadInfo>() {
     override fun onExecute(manager: VKApiManager): VKVideoFileUploadInfo {
         val uploadInfo = getVideoUploadInfo(manager)
 
@@ -23,8 +21,15 @@ class VKVideoPostCommand(private val videoUri: Uri) : ApiCommand<VKVideoFileUplo
             .retryCount(RETRY_COUNT)
             .build()
 
+        val progress = object : VKApiProgressListener {
+            override fun onProgress(progressValue: Int, progressMaxValue: Int) {
+                progressCallback.invoke(progressValue, progressMaxValue)
+            }
+
+        }
+
         return manager.execute(
-            fileUploadCall, null,
+            fileUploadCall, progress,
             FileUploadInfoParser()
         )
     }
