@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
-        android:text="Открыть галерею"
+        android:text="@string/open_galery"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <VideoView
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
          android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
-        android:text="Загрузить на сервер"
+        android:text="@string/loading_to_server"
         android:textAppearance="?android:attr/textAppearanceLarge" />
     <Button
         android:id="@+id/pause"
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
-        android:text="Пауза"
+        android:text="@string/Pause"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
-        android:text="Вернуться"
+        android:text="@string/back"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </LinearLayout>

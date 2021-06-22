@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">BestVideoLoader</string>
     <string name="LoadNewVideo">Загрузить новое видео</string>
+    <string name="loading_to_server">Загрузить на сервер</string>
+    <string name="Pause">Пауза</string>
+    <string name="back">Вернуться</string>
+    <string name="open_galery">Открыть галерею</string>
 
     <integer name="com_vk_sdk_AppId">7883823</integer>
 </resources>
