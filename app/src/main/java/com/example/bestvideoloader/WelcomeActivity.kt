@@ -11,7 +11,7 @@ import com.vk.api.sdk.auth.VKAccessToken
 import com.vk.api.sdk.auth.VKAuthCallback
 import com.vk.api.sdk.auth.VKScope
 
-class WelcomeActivity: Activity() {
+class WelcomeActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -29,7 +29,7 @@ class WelcomeActivity: Activity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val callback = object: VKAuthCallback {
+        val callback = object : VKAuthCallback {
             override fun onLogin(token: VKAccessToken) {
                 MainActivity.startFrom(this@WelcomeActivity)
                 finish()
